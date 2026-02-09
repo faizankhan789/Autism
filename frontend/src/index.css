@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6C63FF;
+  --color-primary-light: #8B85FF;
+  --color-primary-dark: #4A42DB;
+  --color-secondary: #FF6B9D;
+  --color-accent: #00D4AA;
+  --color-warning: #FFB347;
+  --color-success: #4CAF50;
+  --color-pastel-blue: #B8D4E3;
+  --color-pastel-pink: #F8C8DC;
+  --color-pastel-green: #B5EAD7;
+  --color-pastel-yellow: #FFEAA7;
+  --color-pastel-purple: #D5AAFF;
+  --color-pastel-orange: #FFD4A8;
+  --color-dark-bg: #1A1A2E;
+  --color-dark-card: #16213E;
+  --color-dark-text: #E8E8E8;
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Noto Nastaliq Urdu', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Urdu text support */
+.urdu-text {
+  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Child-friendly animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(108, 99, 255, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(108, 99, 255, 0.6); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes star-spin {
+  from { transform: rotate(0deg) scale(0); opacity: 0; }
+  50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+  to { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-bounce-in { animation: bounce-in 0.5s ease-out; }
+.animate-star-spin { animation: star-spin 0.8s ease-out; }
+
+/* Sensory-friendly mode - reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-pulse-glow, .animate-bounce-in, .animate-star-spin {
+    animation: none;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 10px;
+}
