@@ -124,7 +124,7 @@ export default function RewardAnimation({
             initial={{ scale: 0, rotate: -180 }}
             animate={{
               scale: [0, 1.3, 1],
-              rotate: [−180, 20, 0],
+              rotate: [-180, 20, 0],
             }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{

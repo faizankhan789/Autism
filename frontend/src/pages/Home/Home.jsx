@@ -7,13 +7,7 @@ import { useSensory } from '../../context/SensoryContext';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 
-/* ---------- Lazy-safe Avatar import ---------- */
-let AvatarWithSpeech = null;
-try {
-  AvatarWithSpeech = require('../../components/Avatar/AvatarWithSpeech').default;
-} catch {
-  AvatarWithSpeech = null;
-}
+import AvatarWithSpeech from '../../components/Avatar/AvatarWithSpeech';
 
 /* ============================================================
    Animated floating decorative elements
@@ -192,23 +186,10 @@ export default function Home() {
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
             className="mb-8"
           >
-            {AvatarWithSpeech ? (
-              <AvatarWithSpeech
-                message="Hello! I'm your learning buddy! Let's learn and play together!"
-                urduMessage="ہیلو! میں آپ کا سیکھنے کا ساتھی ہوں! آئیے مل کر سیکھتے اور کھیلتے ہیں!"
-              />
-            ) : (
-              /* Fallback avatar if the component hasn't been created yet */
-              <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-white/20 backdrop-blur-sm border-4 border-white/40 flex items-center justify-center shadow-2xl">
-                <motion.span
-                  className="text-6xl md:text-7xl"
-                  animate={{ rotate: [0, 14, -14, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  🤗
-                </motion.span>
-              </div>
-            )}
+            <AvatarWithSpeech
+              message="Hello! I'm your learning buddy! Let's learn and play together!"
+              messageUrdu="ہیلو! میں آپ کا سیکھنے کا ساتھی ہوں! آئیے مل کر سیکھتے اور کھیلتے ہیں!"
+            />
           </motion.div>
 
           {/* Greeting */}

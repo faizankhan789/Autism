@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Avatar from './Avatar';
-import { useSpeech } from '../../hooks/useSpeech';
+import useSpeech from '../../hooks/useSpeech';
 import { useSensory } from '../../context/SensoryContext';
 
 export default function AvatarWithSpeech({
@@ -10,17 +10,17 @@ export default function AvatarWithSpeech({
   mood = 'happy',
 }) {
   const { speak, isSpeaking, stop } = useSpeech();
-  const { settings } = useSensory();
+  const { language, soundEnabled } = useSensory();
   const [showBubble, setShowBubble] = useState(false);
 
-  const isUrdu = settings?.language === 'ur';
+  const isUrdu = language === 'ur';
   const displayMessage = isUrdu && messageUrdu ? messageUrdu : message;
 
   useEffect(() => {
     if (displayMessage) {
       setShowBubble(true);
 
-      if (settings?.soundEnabled !== false) {
+      if (soundEnabled !== false) {
         speak(displayMessage, isUrdu ? 'ur' : 'en');
       }
     }
@@ -36,7 +36,7 @@ export default function AvatarWithSpeech({
       setShowBubble(false);
     } else if (displayMessage) {
       setShowBubble(true);
-      if (settings?.soundEnabled !== false) {
+      if (soundEnabled !== false) {
         speak(displayMessage, isUrdu ? 'ur' : 'en');
       }
     }

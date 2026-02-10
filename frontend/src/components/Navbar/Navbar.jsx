@@ -9,11 +9,9 @@ import {
   FaChartBar,
   FaBars,
   FaTimes,
-  FaCog,
   FaSignInAlt,
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-import SensoryPanel from '../SensoryPanel/SensoryPanel';
 
 const navItems = [
   { to: '/', label: 'Home', icon: FaHome },
@@ -44,8 +42,7 @@ function NavItem({ to, label, icon: Icon, onClick }) {
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [sensoryOpen, setSensoryOpen] = useState(false);
-  const { user, isAuthenticated } = useAuth?.() || {};
+  const { user, isAuthenticated } = useAuth();
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -69,17 +66,6 @@ export default function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-3">
-              {/* Sensory Panel toggle */}
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setSensoryOpen(true)}
-                className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
-                aria-label="Sensory settings"
-              >
-                <FaCog className="text-xl" />
-              </motion.button>
-
               {/* User area */}
               {isAuthenticated && user ? (
                 <Link
@@ -139,8 +125,6 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Sensory Panel */}
-      <SensoryPanel isOpen={sensoryOpen} onClose={() => setSensoryOpen(false)} />
     </>
   );
 }
