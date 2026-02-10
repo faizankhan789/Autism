@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../../../components/common/Button';
 import RewardAnimation from '../../../components/common/RewardAnimation';
+import useTranslation from '../../../hooks/useTranslation';
 
 const RING_COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
 const LEVELS = { 1: 3, 2: 4, 3: 5 };
@@ -17,7 +18,7 @@ function Ring({ size, maxSize, color, isSelected, onClick }) {
   );
 }
 
-function Peg({ rings, maxSize, pegIndex, selectedPeg, onSelectPeg, onPlaceRing }) {
+function Peg({ rings, maxSize, pegIndex, selectedPeg, onSelectPeg, onPlaceRing, t }) {
   const isSelected = selectedPeg === pegIndex;
   return (
     <div onClick={() => rings.length > 0 && selectedPeg === null ? onSelectPeg(pegIndex) : onPlaceRing(pegIndex)}
@@ -28,14 +29,15 @@ function Peg({ rings, maxSize, pegIndex, selectedPeg, onSelectPeg, onPlaceRing }
           <Ring key={ring.size} size={ring.size} maxSize={maxSize} color={ring.color}
             isSelected={isSelected && i === rings.length - 1} onClick={(e) => { e.stopPropagation(); onSelectPeg(pegIndex); }} />
         ))}
-        {rings.length === 0 && <div className="text-gray-300 text-center text-sm py-8">Empty</div>}
+        {rings.length === 0 && <div className="text-gray-300 text-center text-sm py-8">{t('tower.empty')}</div>}
       </div>
-      <div className="mt-2 text-xs font-semibold text-gray-400">Peg {pegIndex + 1}</div>
+      <div className="mt-2 text-xs font-semibold text-gray-400">{t('tower.peg')} {pegIndex + 1}</div>
     </div>
   );
 }
 
 export default function TowerGame() {
+  const { t } = useTranslation();
   const [level, setLevel] = useState(1);
   const [showReward, setShowReward] = useState(false);
   const ringCount = LEVELS[level];
@@ -91,33 +93,32 @@ export default function TowerGame() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 p-4 pt-24">
       <div className="max-w-3xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
-          <h1 className="text-3xl font-extrabold text-gray-800">🗼 Tower Game</h1>
-          <p className="text-gray-500 urdu-text">ٹاور کا کھیل</p>
-          <p className="text-gray-400 text-sm mt-1">Move all rings to the last peg!</p>
+          <h1 className="text-3xl font-extrabold text-gray-800">🗼 {t('tower.title')}</h1>
+          <p className="text-gray-400 text-sm mt-1">{t('tower.moveAllRings')}</p>
         </motion.div>
 
         <div className="flex justify-center gap-2 mb-6">
           {[1, 2, 3].map(l => (
             <button key={l} onClick={() => changeLevel(l)}
               className={`px-4 py-2 rounded-xl font-semibold text-sm ${level === l ? 'bg-orange-500 text-white' : 'bg-white text-gray-600'}`}>
-              Level {l} ({LEVELS[l]} rings)
+              {t('tower.level')} {l} ({LEVELS[l]} {t('tower.rings')})
             </button>
           ))}
         </div>
 
         <div className="flex justify-center gap-4 mb-4 text-sm">
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Moves: {game.moves}</span>
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Min: {minMoves}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('puzzle.moves')}: {game.moves}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('tower.min')}: {minMoves}</span>
         </div>
 
         <div className="bg-white rounded-3xl p-6 shadow-lg mb-6">
           <p className="text-center text-sm text-gray-400 mb-4">
-            {selectedPeg !== null ? '🟣 Now click a peg to place the ring!' : 'Click a peg to pick up the top ring'}
+            {selectedPeg !== null ? `🟣 ${t('tower.clickToPlace')}` : t('tower.clickToPickUp')}
           </p>
           <div className="flex gap-4 relative">
             {game.pegs.map((rings, i) => (
               <Peg key={i} rings={rings} maxSize={ringCount} pegIndex={i}
-                selectedPeg={selectedPeg} onSelectPeg={handleSelectPeg} onPlaceRing={handlePlaceRing} />
+                selectedPeg={selectedPeg} onSelectPeg={handleSelectPeg} onPlaceRing={handlePlaceRing} t={t} />
             ))}
           </div>
         </div>
@@ -125,11 +126,11 @@ export default function TowerGame() {
         {game.completed && (
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
             className="text-center bg-white rounded-3xl p-8 shadow-lg">
-            <h2 className="text-3xl font-extrabold text-orange-500 mb-2">🎉 Well Done!</h2>
-            <p className="text-gray-500 mb-4">Completed in {game.moves} moves (minimum: {minMoves})</p>
+            <h2 className="text-3xl font-extrabold text-orange-500 mb-2">🎉 {t('common.wellDone')}</h2>
+            <p className="text-gray-500 mb-4">{t('tower.completed').replace('{moves}', game.moves).replace('{min}', minMoves)}</p>
             <div className="flex gap-3 justify-center">
-              <Button variant="primary" onClick={restart}>Play Again</Button>
-              {level < 3 && <Button variant="secondary" onClick={() => changeLevel(level + 1)}>Next Level</Button>}
+              <Button variant="primary" onClick={restart}>{t('common.playAgain')}</Button>
+              {level < 3 && <Button variant="secondary" onClick={() => changeLevel(level + 1)}>{t('tower.nextLevel')}</Button>}
             </div>
           </motion.div>
         )}

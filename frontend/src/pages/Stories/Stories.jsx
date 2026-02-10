@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowLeft, FaArrowRight, FaTimes, FaBookOpen } from 'react-icons/fa';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
-import { useSensory } from '../../context/SensoryContext';
+import useTranslation from '../../hooks/useTranslation';
 
 const STORIES = [
   {
@@ -128,8 +128,7 @@ const slideVariants = {
 };
 
 const Stories = () => {
-  const { language } = useSensory();
-  const isUrdu = language === 'ur';
+  const { t, isUrdu } = useTranslation();
 
   const [activeStory, setActiveStory] = useState(null);
   const [sceneIndex, setSceneIndex] = useState(0);
@@ -186,9 +185,7 @@ const Stories = () => {
               {isUrdu ? activeStory.title_ur : activeStory.title}
             </h2>
             <p className="text-sm text-gray-500 mt-0.5">
-              {isUrdu
-                ? `منظر ${sceneIndex + 1} از ${totalScenes}`
-                : `Scene ${sceneIndex + 1} of ${totalScenes}`}
+              {t('stories.sceneOf').replace('{current}', sceneIndex + 1).replace('{total}', totalScenes)}
             </p>
           </div>
           <button
@@ -250,15 +247,9 @@ const Stories = () => {
 
               {/* Text */}
               <div className="text-center px-4 space-y-3">
-                <p className="text-2xl md:text-3xl font-bold text-gray-800 leading-relaxed">
-                  {scene.text}
-                </p>
-                <p
-                  className="text-xl md:text-2xl font-semibold text-gray-600 leading-relaxed"
-                  dir="rtl"
-                  lang="ur"
-                >
-                  {scene.text_ur}
+                <p className="text-2xl md:text-3xl font-bold text-gray-800 leading-relaxed"
+                  dir={isUrdu ? 'rtl' : 'ltr'}>
+                  {isUrdu ? scene.text_ur : scene.text}
                 </p>
               </div>
             </motion.div>
@@ -294,7 +285,7 @@ const Stories = () => {
                   : 'hover:scale-105'
               }`}
             >
-              {isUrdu ? 'پچھلا' : 'Previous'}
+              {t('common.previous')}
             </Button>
 
             {isLast ? (
@@ -302,14 +293,14 @@ const Stories = () => {
                 onClick={closeStory}
                 className="px-8 py-2 rounded-xl font-bold bg-green-500 hover:bg-green-600 text-white hover:scale-105 transition-all"
               >
-                {isUrdu ? 'ختم کریں' : 'Finish'}
+                {t('common.finish')}
               </Button>
             ) : (
               <Button
                 onClick={goNext}
                 className="px-8 py-2 rounded-xl font-bold hover:scale-105 transition-all"
               >
-                {isUrdu ? 'اگلا' : 'Next'}
+                {t('common.next')}
               </Button>
             )}
           </div>
@@ -337,12 +328,10 @@ const Stories = () => {
           <FaBookOpen className="text-3xl text-white" />
         </motion.div>
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-          {isUrdu ? 'سماجی کہانیاں' : 'Social Stories'}
+          {t('stories.title')}
         </h1>
         <p className="text-lg text-gray-500 mt-2" dir={isUrdu ? 'rtl' : 'ltr'}>
-          {isUrdu
-            ? 'ایک کہانی منتخب کریں اور پڑھنا شروع کریں!'
-            : 'Choose a story and start reading!'}
+          {t('stories.subtitle')}
         </p>
       </div>
 
@@ -378,20 +367,16 @@ const Stories = () => {
 
               {/* Info */}
               <div className="p-5">
-                <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-indigo-600 transition-colors">
-                  {story.title}
+                <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-indigo-600 transition-colors"
+                  dir={isUrdu ? 'rtl' : 'ltr'}>
+                  {isUrdu ? story.title_ur : story.title}
                 </h3>
-                <p className="text-lg font-semibold text-gray-500 mb-3" dir="rtl" lang="ur">
-                  {story.title_ur}
-                </p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400 font-medium">
-                    {isUrdu
-                      ? `${story.scenes.length} مناظر`
-                      : `${story.scenes.length} scenes`}
+                    {story.scenes.length} {t('stories.scenes')}
                   </span>
                   <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-500 group-hover:text-indigo-700 transition-colors">
-                    {isUrdu ? 'پڑھیں' : 'Read'}
+                    {t('common.read')}
                     <FaArrowRight className="text-xs" />
                   </span>
                 </div>

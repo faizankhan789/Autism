@@ -2,12 +2,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../../components/common/Button';
 import RewardAnimation from '../../../components/common/RewardAnimation';
+import useTranslation from '../../../hooks/useTranslation';
 
 const SHAPES = ['⭐', '❤️', '🔵', '🟢', '🌸', '🦋', '🌈', '🎈'];
 const COLORS = ['from-yellow-400 to-orange-400', 'from-pink-400 to-red-400', 'from-blue-400 to-indigo-400', 'from-green-400 to-teal-400'];
 const GAME_DURATION = 60;
 
 export default function EyeTrackingGame() {
+  const { t } = useTranslation();
   const [target, setTarget] = useState({ x: 50, y: 40, shape: 0 });
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -84,11 +86,10 @@ export default function EyeTrackingGame() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4 pt-24">
         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-md">
           <div className="text-6xl mb-4">👁️</div>
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-2">Eye Tracking Game</h1>
-          <p className="text-gray-500 urdu-text mb-4">آنکھوں سے کھیل</p>
-          <p className="text-gray-400 mb-2">Move your mouse to follow the targets!</p>
-          <p className="text-gray-400 text-sm mb-6">Hold your gaze on the target for 1.5 seconds to pop it!</p>
-          <Button variant="primary" onClick={startGame}>Start Game</Button>
+          <h1 className="text-3xl font-extrabold text-gray-800 mb-2">{t('eyeTracking.title')}</h1>
+          <p className="text-gray-400 mb-2">{t('eyeTracking.moveYourMouse')}</p>
+          <p className="text-gray-400 text-sm mb-6">{t('eyeTracking.holdGaze')}</p>
+          <Button variant="primary" onClick={startGame}>{t('eyeTracking.startGame')}</Button>
         </motion.div>
       </div>
     );
@@ -99,10 +100,10 @@ export default function EyeTrackingGame() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4 pt-24">
         <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-md">
           <div className="text-6xl mb-4">🎯</div>
-          <h2 className="text-3xl font-extrabold text-green-600 mb-2">Time's Up!</h2>
+          <h2 className="text-3xl font-extrabold text-green-600 mb-2">{t('eyeTracking.timesUp')}</h2>
           <p className="text-5xl font-extrabold text-purple-500 mb-2">{score}</p>
-          <p className="text-gray-500 mb-6">targets popped in {GAME_DURATION} seconds!</p>
-          <Button variant="primary" onClick={startGame}>Play Again</Button>
+          <p className="text-gray-500 mb-6">{t('eyeTracking.targetsPopped').replace('{seconds}', GAME_DURATION)}</p>
+          <Button variant="primary" onClick={startGame}>{t('common.playAgain')}</Button>
         </motion.div>
         <RewardAnimation type="star" show={showReward} onComplete={() => setShowReward(false)} />
       </div>
@@ -113,7 +114,7 @@ export default function EyeTrackingGame() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-cyan-50 to-blue-50 p-4 pt-24">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-4">
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-bold text-green-600">Score: {score}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-bold text-green-600">{t('common.score')}: {score}</span>
           <span className={`px-4 py-2 rounded-xl shadow-sm font-bold ${timeLeft <= 10 ? 'bg-red-100 text-red-600' : 'bg-white text-gray-600'}`}>
             ⏱ {timeLeft}s
           </span>
@@ -125,13 +126,11 @@ export default function EyeTrackingGame() {
         </div>
 
         <div ref={containerRef} className="relative bg-white rounded-3xl shadow-lg overflow-hidden" style={{ height: '65vh' }}>
-          {/* Trail */}
           {trail.map((dot, i) => (
             <div key={dot.id} className="absolute w-3 h-3 rounded-full bg-purple-300 pointer-events-none transition-opacity"
               style={{ left: `${dot.x}%`, top: `${dot.y}%`, opacity: (i + 1) / trail.length * 0.5, transform: 'translate(-50%,-50%)' }} />
           ))}
 
-          {/* Target */}
           <motion.div
             animate={{ x: [0, 5, -5, 0], y: [0, -5, 5, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
@@ -148,7 +147,6 @@ export default function EyeTrackingGame() {
             </div>
           </motion.div>
 
-          {/* Pop effect */}
           <AnimatePresence>
             {popEffect && (
               <motion.div initial={{ scale: 1, opacity: 1 }} animate={{ scale: 3, opacity: 0 }} exit={{ opacity: 0 }}
@@ -159,7 +157,6 @@ export default function EyeTrackingGame() {
             )}
           </AnimatePresence>
 
-          {/* Gaze cursor */}
           <div className="absolute w-6 h-6 rounded-full border-2 border-purple-500 bg-purple-200/30 pointer-events-none"
             style={{ left: `${gazePos.x}%`, top: `${gazePos.y}%`, transform: 'translate(-50%,-50%)', transition: 'all 0.05s' }} />
         </div>

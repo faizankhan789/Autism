@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSensory } from '../../context/SensoryContext';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
+import useTranslation from '../../hooks/useTranslation';
 
 import AvatarWithSpeech from '../../components/Avatar/AvatarWithSpeech';
 
@@ -55,60 +56,6 @@ function FloatingCircle({ size, color, x, y, duration }) {
 }
 
 /* ============================================================
-   Navigation card data
-   ============================================================ */
-const NAV_CARDS = [
-  {
-    to: '/lessons',
-    icon: FaBook,
-    titleEn: 'Lessons',
-    titleUr: 'اسباق',
-    description: 'Fun learning activities to build new skills!',
-    gradient: 'from-purple-400 to-purple-600',
-    bgLight: 'bg-purple-50',
-    iconBg: 'bg-purple-100',
-    iconColor: 'text-purple-500',
-    shadow: 'hover:shadow-purple-200',
-  },
-  {
-    to: '/games',
-    icon: FaGamepad,
-    titleEn: 'Games',
-    titleUr: 'کھیل',
-    description: 'Play exciting games while you learn!',
-    gradient: 'from-pink-400 to-rose-500',
-    bgLight: 'bg-pink-50',
-    iconBg: 'bg-pink-100',
-    iconColor: 'text-pink-500',
-    shadow: 'hover:shadow-pink-200',
-  },
-  {
-    to: '/stories',
-    icon: FaBookOpen,
-    titleEn: 'Stories',
-    titleUr: 'کہانیاں',
-    description: 'Listen to wonderful tales and adventures!',
-    gradient: 'from-emerald-400 to-green-500',
-    bgLight: 'bg-emerald-50',
-    iconBg: 'bg-emerald-100',
-    iconColor: 'text-emerald-500',
-    shadow: 'hover:shadow-emerald-200',
-  },
-  {
-    to: '/dashboard',
-    icon: FaChartBar,
-    titleEn: 'Dashboard',
-    titleUr: 'ڈیش بورڈ',
-    description: 'See how much you have learned!',
-    gradient: 'from-cyan-400 to-blue-500',
-    bgLight: 'bg-cyan-50',
-    iconBg: 'bg-cyan-100',
-    iconColor: 'text-cyan-500',
-    shadow: 'hover:shadow-cyan-200',
-  },
-];
-
-/* ============================================================
    Stagger animation variants
    ============================================================ */
 const containerVariants = {
@@ -134,6 +81,55 @@ const cardVariants = {
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const { animationDuration } = useSensory();
+  const { t, isUrdu } = useTranslation();
+
+  /* Navigation card data (inside component so t() is available) */
+  const NAV_CARDS = useMemo(() => [
+    {
+      to: '/lessons',
+      icon: FaBook,
+      title: t('nav.lessons'),
+      description: t('home.lessonsDesc'),
+      gradient: 'from-purple-400 to-purple-600',
+      bgLight: 'bg-purple-50',
+      iconBg: 'bg-purple-100',
+      iconColor: 'text-purple-500',
+      shadow: 'hover:shadow-purple-200',
+    },
+    {
+      to: '/games',
+      icon: FaGamepad,
+      title: t('nav.games'),
+      description: t('home.gamesDesc'),
+      gradient: 'from-pink-400 to-rose-500',
+      bgLight: 'bg-pink-50',
+      iconBg: 'bg-pink-100',
+      iconColor: 'text-pink-500',
+      shadow: 'hover:shadow-pink-200',
+    },
+    {
+      to: '/stories',
+      icon: FaBookOpen,
+      title: t('nav.stories'),
+      description: t('home.storiesDesc'),
+      gradient: 'from-emerald-400 to-green-500',
+      bgLight: 'bg-emerald-50',
+      iconBg: 'bg-emerald-100',
+      iconColor: 'text-emerald-500',
+      shadow: 'hover:shadow-emerald-200',
+    },
+    {
+      to: '/dashboard',
+      icon: FaChartBar,
+      title: t('nav.dashboard'),
+      description: t('home.dashboardDesc'),
+      gradient: 'from-cyan-400 to-blue-500',
+      bgLight: 'bg-cyan-50',
+      iconBg: 'bg-cyan-100',
+      iconColor: 'text-cyan-500',
+      shadow: 'hover:shadow-cyan-200',
+    },
+  ], [t]);
 
   /* Memoised hero circles so they don't remount on re-render */
   const heroCircles = useMemo(
@@ -178,7 +174,10 @@ export default function Home() {
         ))}
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-4 py-16 md:py-24 text-center">
+        <div
+          className="relative z-10 flex flex-col items-center justify-center px-4 py-16 md:py-24 text-center"
+          dir={isUrdu ? 'rtl' : 'ltr'}
+        >
           {/* Avatar Section */}
           <motion.div
             initial={{ scale: 0, rotate: -10 }}
@@ -197,28 +196,18 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: animationDuration }}
-            className="text-3xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3 leading-tight"
+            className={`text-3xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3 leading-tight ${isUrdu ? 'font-urdu' : ''}`}
           >
-            Hello! I&apos;m your learning buddy!
+            {t('home.greeting')}
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: animationDuration }}
-            className="text-xl md:text-2xl text-white/90 font-medium mb-2"
+            className={`text-xl md:text-2xl text-white/90 font-medium mb-8 ${isUrdu ? 'font-urdu' : ''}`}
           >
-            Let&apos;s learn and play together!
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: animationDuration }}
-            className="text-lg md:text-xl text-white/80 font-urdu mb-8"
-            dir="rtl"
-          >
-            ہیلو! میں آپ کا سیکھنے کا ساتھی ہوں! آئیے مل کر سیکھتے اور کھیلتے ہیں!
+            {t('home.subtitle')}
           </motion.p>
 
           {/* Get Started button (only if not logged in) */}
@@ -229,8 +218,8 @@ export default function Home() {
               transition={{ delay: 1.1, type: 'spring', stiffness: 300, damping: 18 }}
             >
               <Link to="/login">
-                <Button variant="secondary" size="lg" className="text-lg px-10 py-4 shadow-xl">
-                  Get Started
+                <Button variant="secondary" size="lg" className={`text-lg px-10 py-4 shadow-xl ${isUrdu ? 'font-urdu' : ''}`}>
+                  {t('home.getStarted')}
                 </Button>
               </Link>
             </motion.div>
@@ -252,26 +241,19 @@ export default function Home() {
       {/* ========================================
           NAVIGATION CARDS
           ======================================== */}
-      <section className="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-20">
+      <section
+        className="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-20"
+        dir={isUrdu ? 'rtl' : 'ltr'}
+      >
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: animationDuration }}
-          className="text-2xl md:text-4xl font-extrabold text-center text-purple-700 mb-4"
+          className={`text-2xl md:text-4xl font-extrabold text-center text-purple-700 mb-12 ${isUrdu ? 'font-urdu' : ''}`}
         >
-          What would you like to do today?
+          {t('home.whatToDo')}
         </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: animationDuration }}
-          className="text-center text-purple-400 text-base md:text-lg mb-12 font-urdu"
-          dir="rtl"
-        >
-          آج آپ کیا کرنا چاہیں گے؟
-        </motion.p>
 
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
@@ -292,18 +274,13 @@ export default function Home() {
                     <card.icon className={`text-3xl ${card.iconColor}`} />
                   </div>
 
-                  {/* English title */}
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">
-                    {card.titleEn}
+                  {/* Title */}
+                  <h3 className={`text-xl md:text-2xl font-bold text-gray-800 mb-3 ${isUrdu ? 'font-urdu' : ''}`}>
+                    {card.title}
                   </h3>
 
-                  {/* Urdu title */}
-                  <p className="text-sm text-gray-500 font-urdu mb-3" dir="rtl">
-                    {card.titleUr}
-                  </p>
-
                   {/* Description */}
-                  <p className="text-sm md:text-base text-gray-500 leading-relaxed">
+                  <p className={`text-sm md:text-base text-gray-500 leading-relaxed ${isUrdu ? 'font-urdu' : ''}`}>
                     {card.description}
                   </p>
 
@@ -326,6 +303,7 @@ export default function Home() {
           viewport={{ once: true }}
           transition={{ duration: animationDuration }}
           className="max-w-2xl mx-auto bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-purple-100"
+          dir={isUrdu ? 'rtl' : 'ltr'}
         >
           <motion.div
             animate={{ scale: [1, 1.15, 1] }}
@@ -334,14 +312,11 @@ export default function Home() {
           >
             <FaStar className="text-yellow-400" />
           </motion.div>
-          <h3 className="text-xl md:text-2xl font-bold text-purple-700 mb-2">
-            You are amazing!
+          <h3 className={`text-xl md:text-2xl font-bold text-purple-700 mb-2 ${isUrdu ? 'font-urdu' : ''}`}>
+            {t('home.youAreAmazing')}
           </h3>
-          <p className="text-gray-500 mb-1">
-            Every step you take is a step towards something wonderful.
-          </p>
-          <p className="text-gray-400 font-urdu text-sm" dir="rtl">
-            آپ بہت شاندار ہیں! آپ کا ہر قدم کامیابی کی طرف ہے۔
+          <p className={`text-gray-500 ${isUrdu ? 'font-urdu' : ''}`}>
+            {t('home.everyStep')}
           </p>
         </motion.div>
       </section>

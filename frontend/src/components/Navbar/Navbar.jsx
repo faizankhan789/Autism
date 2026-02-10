@@ -12,14 +12,7 @@ import {
   FaSignInAlt,
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-
-const navItems = [
-  { to: '/', label: 'Home', icon: FaHome },
-  { to: '/lessons', label: 'Lessons', icon: FaBook },
-  { to: '/games', label: 'Games', icon: FaGamepad },
-  { to: '/stories', label: 'Stories', icon: FaBookOpen },
-  { to: '/dashboard', label: 'Dashboard', icon: FaChartBar },
-];
+import useTranslation from '../../hooks/useTranslation';
 
 function NavItem({ to, label, icon: Icon, onClick }) {
   return (
@@ -43,6 +36,15 @@ function NavItem({ to, label, icon: Icon, onClick }) {
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, isAuthenticated } = useAuth();
+  const { t, isUrdu } = useTranslation();
+
+  const navItems = [
+    { to: '/', label: t('nav.home'), icon: FaHome },
+    { to: '/lessons', label: t('nav.lessons'), icon: FaBook },
+    { to: '/games', label: t('nav.games'), icon: FaGamepad },
+    { to: '/stories', label: t('nav.stories'), icon: FaBookOpen },
+    { to: '/dashboard', label: t('nav.dashboard'), icon: FaChartBar },
+  ];
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -54,7 +56,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 text-white font-extrabold text-xl">
               <span className="text-2xl">🌟</span>
-              <span className="hidden sm:inline">AutismSupport</span>
+              <span className="hidden sm:inline">{t('nav.brand')}</span>
             </Link>
 
             {/* Desktop nav */}
@@ -85,7 +87,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-white font-semibold text-sm hover:bg-white/30 transition-colors"
                 >
                   <FaSignInAlt />
-                  <span className="hidden sm:inline">Login</span>
+                  <span className="hidden sm:inline">{t('nav.login')}</span>
                 </Link>
               )}
 

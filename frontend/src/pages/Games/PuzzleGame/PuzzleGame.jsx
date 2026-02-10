@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import Button from '../../../components/common/Button';
 import RewardAnimation from '../../../components/common/RewardAnimation';
+import useTranslation from '../../../hooks/useTranslation';
 
 const ANIMALS = ['🐱', '🐶', '🐰', '🐸', '🦁', '🐨', '🐼', '🐵', '🦊'];
 const COLORS = ['bg-purple-200', 'bg-pink-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200', 'bg-orange-200', 'bg-red-200', 'bg-indigo-200', 'bg-teal-200'];
@@ -42,9 +43,12 @@ function DropZone({ position, placed, onDrop, cols }) {
 }
 
 function PuzzleBoard() {
+  const { t } = useTranslation();
   const [difficulty, setDifficulty] = useState('easy');
   const [showReward, setShowReward] = useState(false);
   const { cols, count } = DIFFICULTIES[difficulty];
+
+  const diffLabels = { easy: t('common.easy'), medium: t('common.medium'), hard: t('common.hard') };
 
   const initGame = useCallback(() => {
     const pieces = Array.from({ length: count }, (_, i) => ({ id: i, correctPos: i }));
@@ -59,7 +63,6 @@ function PuzzleBoard() {
     const newBoard = [...game.board];
     const newTray = game.tray.filter(p => p.id !== item.id);
     const piece = game.tray.find(p => p.id === item.id);
-    const isCorrect = item.index === position;
     newBoard[position] = piece;
 
     const moves = game.moves + 1;
@@ -77,27 +80,25 @@ function PuzzleBoard() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4 pt-24">
       <div className="max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
-          <h1 className="text-3xl font-extrabold text-gray-800">🧩 Puzzle Game</h1>
-          <p className="text-gray-500 urdu-text">پہیلی کا کھیل</p>
+          <h1 className="text-3xl font-extrabold text-gray-800">🧩 {t('puzzle.title')}</h1>
         </motion.div>
 
         <div className="flex justify-center gap-2 mb-6">
           {Object.keys(DIFFICULTIES).map(d => (
             <button key={d} onClick={() => { setDifficulty(d); setTimeout(() => setGame(initGame()), 0); }}
               className={`px-4 py-2 rounded-xl font-semibold text-sm transition ${difficulty === d ? 'bg-purple-500 text-white' : 'bg-white text-gray-600 hover:bg-purple-50'}`}>
-              {d.charAt(0).toUpperCase() + d.slice(1)}
+              {diffLabels[d]}
             </button>
           ))}
         </div>
 
         <div className="flex justify-center gap-6 mb-4 text-sm">
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Moves: {game.moves}</span>
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Score: {game.score}%</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('puzzle.moves')}: {game.moves}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('common.score')}: {game.score}%</span>
         </div>
 
-        {/* Drop zones grid */}
         <div className="bg-white rounded-3xl p-6 shadow-lg mb-6">
-          <h3 className="text-center font-bold text-gray-600 mb-4">Place the animals here!</h3>
+          <h3 className="text-center font-bold text-gray-600 mb-4">{t('puzzle.placeHere')}</h3>
           <div className={`grid gap-3 justify-center`} style={{ gridTemplateColumns: `repeat(${cols}, 5rem)` }}>
             {game.board.map((placed, i) => (
               <DropZone key={i} position={i} placed={placed} onDrop={handleDrop} cols={cols} />
@@ -105,10 +106,9 @@ function PuzzleBoard() {
           </div>
         </div>
 
-        {/* Tray */}
         {game.tray.length > 0 && (
           <div className="bg-white rounded-3xl p-6 shadow-lg">
-            <h3 className="text-center font-bold text-gray-600 mb-4">Drag the animals!</h3>
+            <h3 className="text-center font-bold text-gray-600 mb-4">{t('puzzle.dragAnimals')}</h3>
             <div className="flex flex-wrap gap-3 justify-center">
               {game.tray.map((piece, i) => (
                 <DraggablePiece key={piece.id} piece={piece} index={i} />
@@ -120,9 +120,9 @@ function PuzzleBoard() {
         {game.completed && (
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
             className="text-center mt-6 bg-white rounded-3xl p-8 shadow-lg">
-            <h2 className="text-3xl font-extrabold text-purple-600 mb-2">🎉 Amazing!</h2>
-            <p className="text-gray-500 mb-4">You completed the puzzle in {game.moves} moves!</p>
-            <Button variant="primary" onClick={restart}>Play Again</Button>
+            <h2 className="text-3xl font-extrabold text-purple-600 mb-2">🎉 {t('common.amazing')}</h2>
+            <p className="text-gray-500 mb-4">{t('puzzle.completed').replace('{moves}', game.moves)}</p>
+            <Button variant="primary" onClick={restart}>{t('common.playAgain')}</Button>
           </motion.div>
         )}
 

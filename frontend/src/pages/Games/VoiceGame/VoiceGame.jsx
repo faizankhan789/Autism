@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../../../components/common/Button';
 import RewardAnimation from '../../../components/common/RewardAnimation';
+import useTranslation from '../../../hooks/useTranslation';
 
 const words = [
   { en: 'Apple', ur: 'سیب', emoji: '🍎' },
@@ -17,6 +18,7 @@ const words = [
 ];
 
 export default function VoiceGame() {
+  const { t, isUrdu } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -82,8 +84,8 @@ export default function VoiceGame() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4 pt-24">
         <div className="bg-white rounded-3xl p-8 shadow-lg text-center max-w-md">
           <div className="text-5xl mb-4">🎤</div>
-          <h2 className="text-xl font-bold text-gray-700 mb-2">Speech Recognition Not Available</h2>
-          <p className="text-gray-500">Please use Chrome or Edge browser for this game.</p>
+          <h2 className="text-xl font-bold text-gray-700 mb-2">{t('voice.notAvailable')}</h2>
+          <p className="text-gray-500">{t('voice.useChromeOrEdge')}</p>
         </div>
       </div>
     );
@@ -94,10 +96,10 @@ export default function VoiceGame() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4 pt-24">
         <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-md">
           <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-extrabold text-blue-600 mb-2">Wonderful!</h2>
+          <h2 className="text-3xl font-extrabold text-blue-600 mb-2">{t('common.wonderful')}</h2>
           <p className="text-5xl font-extrabold text-pink-500 mb-4">{score}/{words.length}</p>
-          <p className="text-gray-500 urdu-text mb-6">بہت اچھا! آپ نے {score} الفاظ درست کہے</p>
-          <Button variant="primary" onClick={restart}>Play Again</Button>
+          <p className="text-gray-500 mb-6">{t('voice.greatResult').replace('{score}', score)}</p>
+          <Button variant="primary" onClick={restart}>{t('common.playAgain')}</Button>
         </motion.div>
         <RewardAnimation type="star" show={showReward} onComplete={() => setShowReward(false)} />
       </div>
@@ -110,13 +112,12 @@ export default function VoiceGame() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 p-4 pt-24">
       <div className="max-w-lg mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-6">
-          <h1 className="text-3xl font-extrabold text-gray-800">🎤 Voice Game</h1>
-          <p className="text-gray-500 urdu-text">آواز کا کھیل</p>
+          <h1 className="text-3xl font-extrabold text-gray-800">🎤 {t('voice.title')}</h1>
         </motion.div>
 
         <div className="flex justify-between mb-4 text-sm">
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Word {currentIndex + 1}/{words.length}</span>
-          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">Score: {score}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('voice.word')} {currentIndex + 1}/{words.length}</span>
+          <span className="bg-white px-4 py-2 rounded-xl shadow-sm font-semibold">{t('common.score')}: {score}</span>
         </div>
 
         <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
@@ -127,9 +128,8 @@ export default function VoiceGame() {
         <motion.div key={currentIndex} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-3xl p-10 shadow-lg text-center mb-6">
           <div className="text-8xl mb-4">{current.emoji}</div>
-          <h2 className="text-3xl font-extrabold text-gray-800 mb-1">{current.en}</h2>
-          <p className="text-xl text-gray-500 urdu-text">{current.ur}</p>
-          <p className="text-purple-500 font-semibold mt-4">Can you say this word?</p>
+          <h2 className="text-3xl font-extrabold text-gray-800 mb-1">{isUrdu ? current.ur : current.en}</h2>
+          <p className="text-purple-500 font-semibold mt-4">{t('voice.canYouSay')}</p>
         </motion.div>
 
         <div className="text-center mb-6">
@@ -139,13 +139,13 @@ export default function VoiceGame() {
             className={`w-20 h-20 rounded-full text-white text-3xl shadow-lg transition ${isListening ? 'bg-red-500' : 'bg-blue-500 hover:bg-blue-600'}`}>
             🎤
           </motion.button>
-          <p className="text-gray-400 text-sm mt-2">{isListening ? 'Listening...' : 'Tap to speak'}</p>
+          <p className="text-gray-400 text-sm mt-2">{isListening ? t('voice.listening') : t('voice.tapToSpeak')}</p>
         </div>
 
         {transcript && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="text-center mb-4">
-            <p className="text-gray-500 text-sm">You said:</p>
+            <p className="text-gray-500 text-sm">{t('voice.youSaid')}</p>
             <p className="text-xl font-bold text-gray-700">"{transcript}"</p>
           </motion.div>
         )}
@@ -153,7 +153,7 @@ export default function VoiceGame() {
         {result !== null && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className={`text-center p-4 rounded-xl font-bold ${result ? 'bg-green-100 text-green-600' : 'bg-orange-50 text-orange-500'}`}>
-            {result ? '⭐ Perfect! Great job!' : "Almost! Let's try the next one!"}
+            {result ? `⭐ ${t('voice.perfect')}` : t('voice.almost')}
           </motion.div>
         )}
       </div>

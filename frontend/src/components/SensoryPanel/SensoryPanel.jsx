@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaPalette, FaVolumeUp, FaVolumeMute, FaFont, FaLanguage, FaCog } from 'react-icons/fa';
 import { useSensory } from '../../context/SensoryContext';
-
-const themes = [
-  { id: 'pastel', label: 'Pastel', colors: ['#fce7f3', '#e9d5ff', '#cffafe', '#fef9c3'] },
-  { id: 'high-contrast', label: 'High Contrast', colors: ['#000000', '#ffffff', '#ffff00', '#00ff00'] },
-  { id: 'dark', label: 'Dark', colors: ['#1e1b4b', '#312e81', '#3730a3', '#4338ca'] },
-];
+import useTranslation from '../../hooks/useTranslation';
 
 function ToggleGroup({ options, value, onChange }) {
   return (
@@ -32,6 +27,13 @@ function ToggleGroup({ options, value, onChange }) {
 export default function SensoryPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, animationSpeed, soundEnabled, soundVolume, fontSize, language, setTheme, setAnimationSpeed, setSoundEnabled, setSoundVolume, setFontSize, setLanguage, resetSettings } = useSensory();
+  const { t } = useTranslation();
+
+  const themes = [
+    { id: 'pastel', label: t('sensory.pastel'), colors: ['#fce7f3', '#e9d5ff', '#cffafe', '#fef9c3'] },
+    { id: 'high-contrast', label: t('sensory.highContrast'), colors: ['#000000', '#ffffff', '#ffff00', '#00ff00'] },
+    { id: 'dark', label: t('sensory.dark'), colors: ['#1e1b4b', '#312e81', '#3730a3', '#4338ca'] },
+  ];
 
   return (
     <>
@@ -58,7 +60,7 @@ export default function SensoryPanel() {
               className="fixed right-0 top-0 bottom-0 w-80 max-w-[90vw] bg-white shadow-2xl z-50 overflow-y-auto"
             >
               <div className="sticky top-0 bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-4 flex items-center justify-between">
-                <h2 className="text-white font-extrabold text-lg">Sensory Settings</h2>
+                <h2 className="text-white font-extrabold text-lg">{t('sensory.title')}</h2>
                 <button onClick={() => setIsOpen(false)} className="p-2 rounded-full bg-white/20 text-white">
                   <FaTimes />
                 </button>
@@ -68,29 +70,29 @@ export default function SensoryPanel() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <FaPalette className="text-purple-500" />
-                    <h3 className="font-bold text-gray-700 text-sm uppercase">Theme</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase">{t('sensory.theme')}</h3>
                   </div>
                   <div className="space-y-2">
-                    {themes.map((t) => (
-                      <button key={t.id} onClick={() => setTheme(t.id)}
+                    {themes.map((themeOption) => (
+                      <button key={themeOption.id} onClick={() => setTheme(themeOption.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
-                          theme === t.id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                          theme === themeOption.id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
                         }`}>
                         <div className="flex gap-1">
-                          {t.colors.map((c, i) => (
+                          {themeOption.colors.map((c, i) => (
                             <div key={i} className="w-5 h-5 rounded-full border" style={{ backgroundColor: c }} />
                           ))}
                         </div>
-                        <span className="font-semibold text-gray-700 text-sm">{t.label}</span>
+                        <span className="font-semibold text-gray-700 text-sm">{themeOption.label}</span>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-gray-700 text-sm uppercase mb-2">Animation Speed</h3>
+                  <h3 className="font-bold text-gray-700 text-sm uppercase mb-2">{t('sensory.animationSpeed')}</h3>
                   <ToggleGroup
-                    options={[{ id: 'slow', label: 'Slow' }, { id: 'normal', label: 'Normal' }, { id: 'fast', label: 'Fast' }]}
+                    options={[{ id: 'slow', label: t('sensory.slow') }, { id: 'normal', label: t('sensory.normal') }, { id: 'fast', label: t('sensory.fast') }]}
                     value={animationSpeed} onChange={(v) => setAnimationSpeed(v)}
                   />
                 </div>
@@ -98,7 +100,7 @@ export default function SensoryPanel() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     {soundEnabled ? <FaVolumeUp className="text-purple-500" /> : <FaVolumeMute className="text-gray-400" />}
-                    <h3 className="font-bold text-gray-700 text-sm uppercase">Sound</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase">{t('sensory.sound')}</h3>
                   </div>
                   <button onClick={() => setSoundEnabled(!soundEnabled)}
                     className={`relative w-14 h-8 rounded-full transition-colors ${soundEnabled ? 'bg-purple-500' : 'bg-gray-300'}`}>
@@ -117,10 +119,10 @@ export default function SensoryPanel() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <FaFont className="text-purple-500" />
-                    <h3 className="font-bold text-gray-700 text-sm uppercase">Font Size</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase">{t('sensory.fontSize')}</h3>
                   </div>
                   <ToggleGroup
-                    options={[{ id: 'small', label: 'Small' }, { id: 'medium', label: 'Medium' }, { id: 'large', label: 'Large' }]}
+                    options={[{ id: 'small', label: t('sensory.small') }, { id: 'medium', label: t('sensory.normal') }, { id: 'large', label: t('sensory.large') }]}
                     value={fontSize} onChange={(v) => setFontSize(v)}
                   />
                 </div>
@@ -128,7 +130,7 @@ export default function SensoryPanel() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <FaLanguage className="text-purple-500" />
-                    <h3 className="font-bold text-gray-700 text-sm uppercase">Language</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase">{t('sensory.language')}</h3>
                   </div>
                   <ToggleGroup
                     options={[{ id: 'en', label: 'English' }, { id: 'ur', label: 'اردو' }]}
@@ -140,7 +142,7 @@ export default function SensoryPanel() {
               <div className="p-5 border-t">
                 <button onClick={() => resetSettings()}
                   className="w-full py-2 text-sm font-semibold text-purple-500 hover:text-purple-700">
-                  Reset to Defaults
+                  {t('sensory.resetDefaults')}
                 </button>
               </div>
             </motion.div>

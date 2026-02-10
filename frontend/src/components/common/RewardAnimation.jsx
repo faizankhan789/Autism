@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import useTranslation from '../../hooks/useTranslation';
 
 const confettiColors = [
   '#f472b6', '#a78bfa', '#60a5fa', '#34d399',
@@ -65,6 +66,7 @@ export default function RewardAnimation({
   show = false,
   onComplete,
 }) {
+  const { t } = useTranslation();
   const [confetti, setConfetti] = useState([]);
   const config = typeConfig[type] || typeConfig.star;
 
@@ -159,7 +161,7 @@ export default function RewardAnimation({
             transition={{ delay: 0.5, duration: 0.5 }}
             className="absolute bottom-1/3 text-3xl font-extrabold text-white drop-shadow-lg"
           >
-            Great Job!
+            {t('reward.greatJob')}
           </motion.p>
         </motion.div>
       )}

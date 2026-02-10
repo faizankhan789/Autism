@@ -17,7 +17,7 @@ import {
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import RewardAnimation from "../../components/common/RewardAnimation";
-import { useSensory } from "../../context/SensoryContext";
+import useTranslation from '../../hooks/useTranslation';
 
 // ─── Sample Data ───────────────────────────────────────────────────────────────
 
@@ -407,11 +407,6 @@ function LessonCard({ lesson, isUrdu, onClick }) {
           <h3 className="text-xl font-extrabold leading-tight">
             {isUrdu ? lesson.titleUr : lesson.title}
           </h3>
-          {!isUrdu && (
-            <p className="text-sm opacity-80 mt-1 font-medium" dir="rtl">
-              {lesson.titleUr}
-            </p>
-          )}
         </div>
         {/* Footer info */}
         <div className="p-4 flex items-center justify-between bg-white">
@@ -428,7 +423,7 @@ function LessonCard({ lesson, isUrdu, onClick }) {
 
 // ─── Step View ─────────────────────────────────────────────────────────────────
 
-function StepView({ step, stepIndex, totalSteps, isUrdu, onNext, onPrev }) {
+function StepView({ step, stepIndex, totalSteps, isUrdu, onNext, onPrev, t }) {
   return (
     <motion.div
       key={stepIndex}
@@ -452,7 +447,7 @@ function StepView({ step, stepIndex, totalSteps, isUrdu, onNext, onPrev }) {
 
       {/* Step number */}
       <p className="text-center text-indigo-400 font-bold text-sm mb-2 uppercase tracking-wider">
-        {isUrdu ? `مرحلہ ${stepIndex + 1} / ${totalSteps}` : `Step ${stepIndex + 1} of ${totalSteps}`}
+        {t('lessons.stepOf').replace('{current}', stepIndex + 1).replace('{total}', totalSteps)}
       </p>
 
       {/* Emoji illustration */}
@@ -482,20 +477,14 @@ function StepView({ step, stepIndex, totalSteps, isUrdu, onNext, onPrev }) {
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
-          <FaArrowLeft /> {isUrdu ? "پچھلا" : "Back"}
+          <FaArrowLeft /> {t('lessons.back')}
         </Button>
 
         <Button
           onClick={onNext}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:shadow-lg transition-all"
         >
-          {stepIndex === totalSteps - 1
-            ? isUrdu
-              ? "کوئز شروع کریں"
-              : "Start Quiz"
-            : isUrdu
-            ? "اگلا"
-            : "Next"}{" "}
+          {stepIndex === totalSteps - 1 ? t('lessons.startQuiz') : t('common.next')}{" "}
           <FaArrowRight />
         </Button>
       </div>
@@ -505,7 +494,7 @@ function StepView({ step, stepIndex, totalSteps, isUrdu, onNext, onPrev }) {
 
 // ─── Quiz View ─────────────────────────────────────────────────────────────────
 
-function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer, isCorrect }) {
+function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer, isCorrect, t }) {
   const question = quiz[quizIndex];
 
   return (
@@ -530,7 +519,7 @@ function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer
       </div>
 
       <p className="text-center text-orange-400 font-bold text-sm mb-2 uppercase tracking-wider">
-        {isUrdu ? `سوال ${quizIndex + 1} / ${totalQuiz}` : `Question ${quizIndex + 1} of ${totalQuiz}`}
+        {t('lessons.questionOf').replace('{current}', quizIndex + 1).replace('{total}', totalQuiz)}
       </p>
 
       {/* Star decoration */}
@@ -597,7 +586,7 @@ function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer
             className="mt-6 text-center"
           >
             <p className="text-2xl font-extrabold text-green-600">
-              {isUrdu ? "🎉 بالکل صحیح! شاباش!" : "🎉 Correct! Great job!"}
+              🎉 {t('lessons.lessonCorrect')}
             </p>
           </motion.div>
         )}
@@ -608,7 +597,7 @@ function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer
             className="mt-6 text-center"
           >
             <p className="text-xl font-bold text-orange-500">
-              {isUrdu ? "دوبارہ کوشش کریں! 💪" : "Try again! You can do it! 💪"}
+              {t('lessons.tryAgain')} 💪
             </p>
           </motion.div>
         )}
@@ -619,7 +608,7 @@ function QuizView({ quiz, quizIndex, totalQuiz, isUrdu, onAnswer, selectedAnswer
 
 // ─── Completion Screen ─────────────────────────────────────────────────────────
 
-function CompletionScreen({ lesson, isUrdu, onBack }) {
+function CompletionScreen({ lesson, isUrdu, onBack, t }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -636,12 +625,10 @@ function CompletionScreen({ lesson, isUrdu, onBack }) {
       </motion.div>
 
       <h2 className="text-3xl font-extrabold text-gray-800 mb-2">
-        {isUrdu ? "مبارک ہو!" : "Congratulations!"}
+        {t('lessons.congratulations')}
       </h2>
       <p className="text-lg text-gray-500 mb-2">
-        {isUrdu
-          ? `آپ نے "${lesson.titleUr}" مکمل کر لیا!`
-          : `You completed "${lesson.title}"!`}
+        {t('lessons.youCompleted').replace('{title}', isUrdu ? lesson.titleUr : lesson.title)}
       </p>
 
       <div className="flex items-center justify-center gap-2 my-6">
@@ -658,14 +645,14 @@ function CompletionScreen({ lesson, isUrdu, onBack }) {
       </div>
 
       <p className="text-gray-400 mb-8">
-        {isUrdu ? "آپ سیکھنے میں بہت اچھے ہیں!" : "You are an amazing learner!"}
+        {t('lessons.amazingLearner')}
       </p>
 
       <Button
         onClick={onBack}
         className="px-8 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:shadow-lg transition-all"
       >
-        {isUrdu ? "مزید اسباق دیکھیں" : "More Lessons"}
+        {t('lessons.moreLessons')}
       </Button>
     </motion.div>
   );
@@ -674,8 +661,7 @@ function CompletionScreen({ lesson, isUrdu, onBack }) {
 // ─── Main Lessons Component ────────────────────────────────────────────────────
 
 export default function Lessons() {
-  const { language } = useSensory();
-  const isUrdu = language === "ur";
+  const { t, isUrdu } = useTranslation();
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -769,17 +755,10 @@ export default function Lessons() {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
         >
-          {isUrdu ? "اسباق" : "Lessons"}
+          {t('lessons.title')}
         </motion.h1>
-        {!isUrdu && (
-          <p className="text-gray-400 text-lg mt-1 font-medium" dir="rtl">
-            اسباق
-          </p>
-        )}
-        <p className="text-gray-500 mt-2 text-lg max-w-md mx-auto">
-          {isUrdu
-            ? "آئیے مل کر نئی چیزیں سیکھتے ہیں!"
-            : "Let's learn new things together!"}
+        <p className="text-gray-500 mt-2 text-lg max-w-md mx-auto" dir={isUrdu ? 'rtl' : 'ltr'}>
+          {t('lessons.letLearn')}
         </p>
       </div>
 
@@ -836,7 +815,7 @@ export default function Lessons() {
               {filteredLessons.length === 0 && (
                 <div className="text-center py-16">
                   <p className="text-2xl text-gray-300 font-bold">
-                    {isUrdu ? "کوئی سبق نہیں ملا" : "No lessons found"}
+                    {t('lessons.noLessonsFound')}
                   </p>
                 </div>
               )}
@@ -859,7 +838,7 @@ export default function Lessons() {
                 onClick={goBack}
                 className="flex items-center gap-2 px-5 py-2 rounded-xl bg-white shadow text-gray-600 font-bold hover:bg-gray-50 transition-all"
               >
-                <FaArrowLeft /> {isUrdu ? "واپس" : "Back"}
+                <FaArrowLeft /> {t('lessons.back')}
               </Button>
             </div>
 
@@ -880,6 +859,7 @@ export default function Lessons() {
                 isUrdu={isUrdu}
                 onNext={handleStepNext}
                 onPrev={handleStepPrev}
+                t={t}
               />
             </AnimatePresence>
           </motion.div>
@@ -900,7 +880,7 @@ export default function Lessons() {
                 onClick={goBack}
                 className="flex items-center gap-2 px-5 py-2 rounded-xl bg-white shadow text-gray-600 font-bold hover:bg-gray-50 transition-all"
               >
-                <FaArrowLeft /> {isUrdu ? "واپس" : "Back"}
+                <FaArrowLeft /> {t('lessons.back')}
               </Button>
             </div>
 
@@ -908,12 +888,10 @@ export default function Lessons() {
             <div className="text-center mb-6">
               <span className="text-5xl">🧠</span>
               <h2 className="text-2xl font-extrabold text-gray-800 mt-2">
-                {isUrdu ? "کوئز کا وقت!" : "Quiz Time!"}
+                {t('lessons.quizTime')}
               </h2>
               <p className="text-gray-400 mt-1">
-                {isUrdu
-                  ? "آپ نے کتنا سیکھا؟ آئیے دیکھتے ہیں!"
-                  : "Let's see what you learned!"}
+                {t('lessons.letsSeeLearned')}
               </p>
             </div>
 
@@ -927,6 +905,7 @@ export default function Lessons() {
                 onAnswer={handleQuizAnswer}
                 selectedAnswer={selectedAnswer}
                 isCorrect={isCorrect}
+                t={t}
               />
             </AnimatePresence>
           </motion.div>
@@ -941,7 +920,7 @@ export default function Lessons() {
             exit={{ opacity: 0 }}
             className="px-4 pt-8"
           >
-            <CompletionScreen lesson={selectedLesson} isUrdu={isUrdu} onBack={goBack} />
+            <CompletionScreen lesson={selectedLesson} isUrdu={isUrdu} onBack={goBack} t={t} />
           </motion.div>
         )}
       </AnimatePresence>

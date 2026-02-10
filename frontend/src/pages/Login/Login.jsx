@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaLock, FaEnvelope, FaPhone, FaUserShield } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
+import useTranslation from '../../hooks/useTranslation';
 import Avatar from '../../components/Avatar/Avatar';
 import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -14,6 +15,7 @@ export default function Login() {
   const [form, setForm] = useState({ username: '', email: '', password: '', password_confirm: '', role: 'parent', phone: '' });
   const { login, register } = useAuth();
   const navigate = useNavigate();
+  const { t, isUrdu } = useTranslation();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -26,7 +28,7 @@ export default function Login() {
         await login(form.username, form.password);
       } else {
         if (form.password !== form.password_confirm) {
-          setError('Passwords do not match');
+          setError(t('login.passwordsNoMatch'));
           setLoading(false);
           return;
         }
@@ -34,7 +36,7 @@ export default function Login() {
       }
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || err.response?.data?.username?.[0] || 'Something went wrong. Please try again.');
+      setError(err.response?.data?.detail || err.response?.data?.username?.[0] || t('common.error'));
     }
     setLoading(false);
   };
@@ -50,16 +52,13 @@ export default function Login() {
             <Avatar mood="waving" size="sm" />
           </div>
           <h1 className="text-white text-2xl font-extrabold">
-            {isLogin ? 'Welcome Back!' : 'Join Us!'}
+            {isLogin ? t('login.welcomeBack') : t('login.joinUs')}
           </h1>
-          <p className="text-white/80 text-sm mt-1 urdu-text">
-            {isLogin ? 'واپسی پر خوش آمدید!' : 'ہمارے ساتھ شامل ہوں!'}
-          </p>
         </div>
 
         <div className="flex border-b">
-          {['Login', 'Register'].map((tab, i) => (
-            <button key={tab} onClick={() => { setIsLogin(i === 0); setError(''); }}
+          {[t('login.login'), t('login.register')].map((tab, i) => (
+            <button key={i} onClick={() => { setIsLogin(i === 0); setError(''); }}
               className={`flex-1 py-3 text-sm font-bold transition-colors relative ${
                 (i === 0 ? isLogin : !isLogin) ? 'text-purple-600' : 'text-gray-400'
               }`}>
@@ -81,7 +80,7 @@ export default function Login() {
 
           <div className="relative">
             <FaUser className="absolute left-3 top-3.5 text-gray-400" />
-            <input name="username" value={form.username} onChange={handleChange} placeholder="Username"
+            <input name="username" value={form.username} onChange={handleChange} placeholder={t('login.username')}
               className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition" required />
           </div>
 
@@ -89,20 +88,20 @@ export default function Login() {
             <>
               <div className="relative">
                 <FaEnvelope className="absolute left-3 top-3.5 text-gray-400" />
-                <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email"
+                <input name="email" type="email" value={form.email} onChange={handleChange} placeholder={t('login.email')}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition" required />
               </div>
               <div className="relative">
                 <FaUserShield className="absolute left-3 top-3.5 text-gray-400" />
                 <select name="role" value={form.role} onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition bg-white">
-                  <option value="parent">Parent</option>
-                  <option value="therapist">Therapist</option>
+                  <option value="parent">{t('login.parent')}</option>
+                  <option value="therapist">{t('login.therapist')}</option>
                 </select>
               </div>
               <div className="relative">
                 <FaPhone className="absolute left-3 top-3.5 text-gray-400" />
-                <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone (optional)"
+                <input name="phone" value={form.phone} onChange={handleChange} placeholder={t('login.phone')}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition" />
               </div>
             </>
@@ -110,7 +109,7 @@ export default function Login() {
 
           <div className="relative">
             <FaLock className="absolute left-3 top-3.5 text-gray-400" />
-            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password"
+            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder={t('login.password')}
               className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition" required />
           </div>
 
@@ -118,14 +117,14 @@ export default function Login() {
             <div className="relative">
               <FaLock className="absolute left-3 top-3.5 text-gray-400" />
               <input name="password_confirm" type="password" value={form.password_confirm} onChange={handleChange}
-                placeholder="Confirm Password"
+                placeholder={t('login.confirmPassword')}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition" required />
             </div>
           )}
 
           {loading ? <LoadingSpinner /> : (
             <Button variant="primary" className="w-full" type="submit">
-              {isLogin ? 'Login' : 'Create Account'}
+              {isLogin ? t('login.login') : t('login.createAccount')}
             </Button>
           )}
         </form>
