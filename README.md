@@ -1,10 +1,29 @@
-# Autism Support & Learning Platform
+<h1 align="center">🧩 Autism Support &amp; Learning Platform</h1>
 
-A full-stack web application designed to support autistic children through interactive lessons, therapeutic games, social stories, and progress tracking. The platform features full **English/Urdu bilingual** support and a sensory-friendly customizable interface.
+<p align="center">A full-stack web application designed to support autistic children through interactive lessons, therapeutic games, social stories, and progress tracking.<br>
+Full <strong>English/Urdu bilingual</strong> support and a sensory-friendly customizable interface.</p>
+
+<p align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black">
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-7-646cff?style=flat-square&logo=vite&logoColor=white">
+  <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white">
+  <img alt="Django" src="https://img.shields.io/badge/Django-5-092e20?style=flat-square&logo=django&logoColor=white">
+  <img alt="DRF" src="https://img.shields.io/badge/DRF-SimpleJWT-a30000?style=flat-square">
+  <img alt="Languages" src="https://img.shields.io/badge/EN%20%7C%20%D8%A7%D8%B1%D8%AF%D9%88-bilingual-8b5cf6?style=flat-square">
+</p>
+
+<p align="center">
+  <a href="#-features"><b>Features</b></a> ·
+  <a href="#-tech-stack">Tech stack</a> ·
+  <a href="#-getting-started">Getting started</a> ·
+  <a href="#-api-endpoints">API</a> ·
+  <a href="#-language-switching">Language</a> ·
+  <a href="#-sensory-settings">Sensory settings</a>
+</p>
 
 ---
 
-## Features
+## ✨ Features
 
 - **Interactive Lessons** — Step-by-step lessons on communication, social skills, emotions, and daily life with built-in quizzes
 - **Therapeutic Games** — 5 games designed to develop cognitive and motor skills:
@@ -23,7 +42,23 @@ A full-stack web application designed to support autistic children through inter
 
 ---
 
-## Tech Stack
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+    U([Child / parent]) --> F[React 19 + Vite<br/>Tailwind, Framer Motion]
+    F -- "/api (Vite proxy)" --> B[Django REST API<br/>JWT auth]
+    B --> A1[accounts]
+    B --> A2[lessons]
+    B --> A3[games]
+    B --> A4[stories]
+    B --> A5[dashboard]
+    A1 & A2 & A3 & A4 & A5 --> D[(SQLite)]
+```
+
+---
+
+## 🧰 Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -51,7 +86,7 @@ A full-stack web application designed to support autistic children through inter
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 autism/
@@ -108,7 +143,7 @@ autism/
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -159,7 +194,7 @@ npm install
 npm run dev
 ```
 
-The frontend will run at `http://localhost:5173`
+The frontend will run at `http://localhost:3000` and proxies `/api` to the backend on port 8000, so start the backend first.
 
 ### Build for Production
 
@@ -172,12 +207,12 @@ The production build will be generated in `frontend/dist/`.
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
 
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/accounts/register/` | POST | User registration |
-| `/api/accounts/login/` | POST | JWT token login |
+| `/api/accounts/token/` | POST | JWT token login |
 | `/api/accounts/token/refresh/` | POST | Refresh JWT token |
 | `/api/accounts/children/` | GET, POST | List/create child profiles |
 | `/api/lessons/` | GET | List all lessons |
@@ -187,7 +222,7 @@ The production build will be generated in `frontend/dist/`.
 
 ---
 
-## Language Switching
+## 🌐 Language Switching
 
 The app supports full English and Urdu bilingual switching. To change the language:
 
@@ -199,7 +234,7 @@ Translation strings are managed in `frontend/src/i18n/translations.js`.
 
 ---
 
-## Sensory Settings
+## 🎛️ Sensory Settings
 
 The sensory panel allows customization for accessibility:
 
@@ -213,6 +248,11 @@ Settings are persisted in `localStorage`.
 
 ---
 
-## License
+> [!TIP]
+> **Before deploying:** read the secret key from an environment variable and set `DEBUG = False`, `ALLOWED_HOSTS` and `CORS_ALLOWED_ORIGINS` in `backend/config/settings.py`.
+
+---
+
+## 📄 License
 
 This project is developed for educational and therapeutic purposes.
